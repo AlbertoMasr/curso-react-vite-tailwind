@@ -1,7 +1,7 @@
 import { NavLink } from "react-router-dom"
 import { useContext } from "react"
-import { ShoppingCartIcon } from "@heroicons/react/24/solid"
 import { ShoppingCartContext } from "../../Context"
+import { ShoppingCart } from "../ShoppingCart"
 
 const Navbar = () => {
 
@@ -13,6 +13,15 @@ const Navbar = () => {
     const parsedSignOut = JSON.parse(signOut)
     const isUserSignedOut = shoppingCartContext.signOut || parsedSignOut
 
+    // Account
+    const account = localStorage.getItem('account')
+    const parsedAccount = JSON.parse(account)
+
+    // Has an account
+    const noAccountInLocalStorage = parsedAccount ? Object.keys(parsedAccount).length === 0 : true
+    const noAccountInLocalState = shoppingCartContext.account ? Object.keys(shoppingCartContext.account).length === 0 : true
+    const hasUserAnAccount = !noAccountInLocalStorage || !noAccountInLocalState
+
     const handleSignOut = () => {
         const stringfieddSignOut = JSON.stringify(true)
         localStorage.setItem("sign-out", stringfieddSignOut)
@@ -20,7 +29,7 @@ const Navbar = () => {
     }
 
     const renderView = () => {
-        if(isUserSignedOut) {
+        if(isUserSignedOut && !hasUserAnAccount) {
 
             return (
                 <li>
@@ -37,7 +46,7 @@ const Navbar = () => {
             return (
                 <>
                     <li className="text-black/60">
-                        loquesea@ejemplo.com
+                        {parsedAccount?.email}
                     </li>
                     <li>
                         <NavLink to="/my-orders">My orders</NavLink>
@@ -51,11 +60,8 @@ const Navbar = () => {
                             onClick={() => handleSignOut()}
                         >Sign out</NavLink>
                     </li>
-                    <li className="flex">
-                        <ShoppingCartIcon className="h-6 w-6 text-black" />
-                        <div>
-                            {shoppingCartContext.cartProducts.length}
-                        </div>
+                    <li className="flex items-center">
+                        <ShoppingCart />
                     </li>
                 </>
             )
@@ -64,11 +70,11 @@ const Navbar = () => {
     }
 
     return (
-        <nav className="flex justify-between items-center fixed z-10 top-0 w-full py-5 px-8 text-sm font-light">
+        <nav className="flex justify-between items-center fixed z-10 top-0 w-full py-5 px-8 text-sm font-light bg-white">
             <ul className="flex items-center gap-3">
                 <li className="font-semibold text-lg">
                     <NavLink 
-                        to="/"
+                        to={`${isUserSignedOut ? '/sign-in' : '/'}`}
                         onClick={() => shoppingCartContext.setSearchByCategory()}
                     >Shopi</NavLink>
                 </li>

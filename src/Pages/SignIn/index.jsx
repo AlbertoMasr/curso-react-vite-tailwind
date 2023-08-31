@@ -49,7 +49,7 @@ function SignIn() {
         </p>
         <p>
           <span className='font-light text-sm'>Pasword:</span>
-          <span>{parsedAccount?.paswword}</span>
+          <span>{parsedAccount?.password}</span>
         </p>
         <Link to="/">
           <button className='bg-black text-white w-full rounded-lg py-3 mt-4 mb-2 disabled:bg-black/40'
